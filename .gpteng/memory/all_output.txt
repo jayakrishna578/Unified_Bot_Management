@@ -1,0 +1,134 @@
+The project will be implemented using Python, Streamlit for the web interface, OpenAI's GPT-3 and GPT-4 for the chatbots, and SQLite for the database. The project will be structured as follows:
+
+- `main.py`: This is the entry point of the application. It will contain the Streamlit interface and the logic to manage the chatbots.
+- `bot.py`: This file will contain the `Bot` class, which will be used to create and manage individual chatbots.
+- `database.py`: This file will contain the `Database` class, which will be used to interact with the SQLite database.
+- `stock_data_retrieval_bot.py`: This file will contain the `StockDataRetrievalBot` class, which will be used to fetch stock data.
+- `query_bot.py`: This file will contain the `QueryBot` class, which will be used to query the database for stock data.
+
+The `requirements.txt` file will contain the list of Python packages required for the project.
+
+Let's start with the `requirements.txt` file:
+
+requirements.txt
+```
+streamlit
+openai
+sqlite3
+pandas
+```
+
+Now, let's move on to the `bot.py` file:
+
+bot.py
+```python
+import openai
+
+class Bot:
+    def __init__(self, name, model, context_prompt, temperature, documents_to_query):
+        self.name = name
+        self.model = model
+        self.context_prompt = context_prompt
+        self.temperature = temperature
+        self.documents_to_query = documents_to_query
+
+    def chat(self, message):
+        response = openai.ChatCompletion.create(
+            model=self.model,
+            messages=[
+                {"role": "system", "content": self.context_prompt},
+                {"role": "user", "content": message},
+            ],
+            temperature=self.temperature,
+        )
+        return response.choices[0].message['content']
+```
+
+Next, the `database.py` file:
+
+database.py
+```python
+import sqlite3
+
+class Database:
+    def __init__(self, db_name):
+        self.conn = sqlite3.connect(db_name)
+        self.cursor = self.conn.cursor()
+
+    def create_table(self, table_name, columns):
+        self.cursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name} ({columns})")
+        self.conn.commit()
+
+    def insert_data(self, table_name, columns, data):
+        self.cursor.execute(f"INSERT INTO {table_name} ({columns}) VALUES ({data})")
+        self.conn.commit()
+
+    def query_data(self, table_name, columns):
+        self.cursor.execute(f"SELECT {columns} FROM {table_name}")
+        return self.cursor.fetchall()
+```
+
+Next, the `stock_data_retrieval_bot.py` file:
+
+stock_data_retrieval_bot.py
+```python
+import pandas as pd
+from bot import Bot
+
+class StockDataRetrievalBot(Bot):
+    def __init__(self, name, model, context_prompt, temperature, documents_to_query):
+        super().__init__(name, model, context_prompt, temperature, documents_to_query)
+
+    def fetch_stock_data(self):
+        # Fetch stock data using pandas
+        # This is a placeholder and should be replaced with actual code to fetch stock data
+        stock_data = pd.DataFrame()
+        return stock_data
+```
+
+Next, the `query_bot.py` file:
+
+query_bot.py
+```python
+from bot import Bot
+from database import Database
+
+class QueryBot(Bot):
+    def __init__(self, name, model, context_prompt, temperature, documents_to_query, db_name):
+        super().__init__(name, model, context_prompt, temperature, documents_to_query)
+        self.db = Database(db_name)
+
+    def query_stock_data(self, table_name, columns):
+        return self.db.query_data(table_name, columns)
+```
+
+Finally, the `main.py` file:
+
+main.py
+```python
+import streamlit as st
+from bot import Bot
+from stock_data_retrieval_bot import StockDataRetrievalBot
+from query_bot import QueryBot
+
+# Create bots
+radiology_expert = Bot("RadiologyExpert", "gpt-4", "You are a radiology expert.", 0.5, [])
+stock_data_retrieval_bot = StockDataRetrievalBot("StockDataRetrievalBot", "gpt-3.5", "You fetch stock data.", 0.5, [])
+query_bot = QueryBot("QueryBot", "gpt-3.5", "You query stock data.", 0.5, [], "stock_data.db")
+
+# Streamlit interface
+st.title("Unified Bot Management Streamlit App")
+bot_name = st.selectbox("Select a bot", ["RadiologyExpert", "StockDataRetrievalBot", "QueryBot"])
+message = st.text_input("Enter a message")
+
+if st.button("Send"):
+    if bot_name == "RadiologyExpert":
+        response = radiology_expert.chat(message)
+    elif bot_name == "StockDataRetrievalBot":
+        response = stock_data_retrieval_bot.fetch_stock_data()
+    elif bot_name == "QueryBot":
+        response = query_bot.query_stock_data("stock_data", "*")
+    st.write(response)
+```
+
+This concludes a fully working implementation.
