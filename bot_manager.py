@@ -16,9 +16,9 @@ class BotManager:
 
     def initialize_default_bots(self):
         # Initialize default bots here
-        self.default_bots["CovidProtocolBot"] = CovidProtocolBot()
         self.default_bots["GeneralBot"] = Bot("GeneralBot", "gpt-3.5", "You are a helpful assistant.", 0.5, None, self.openai_api_key)
-        self.default_bots["StockDataRetrievalBot"] = StockDataRetrievalBot(api_key=self.openai_api_key)
+        self.default_bots["CovidProtocolBot"] = CovidProtocolBot()
+        #self.default_bots["StockDataRetrievalBot"] = StockDataRetrievalBot(api_key=self.openai_api_key)
 
     def add_bot(self, name, model, context_prompt, temperature, documents):
         # Create and add a new bot to user_bots

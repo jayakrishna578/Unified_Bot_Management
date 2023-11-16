@@ -74,6 +74,14 @@ with st.sidebar:
         if st.button("Delete Selected Bot"):
             bot_manager.delete_bot(selected_bot_name)
             st.experimental_rerun()
+    if st.button("Clear Chat"):
+        selected_bot = bot_manager.get_bot(selected_bot_name)
+        if selected_bot:
+            selected_bot.clear_conversation()
+            # Also clear the stored conversation in Streamlit's session state
+            st.session_state[f'responses_{selected_bot_name}'] = []
+            st.session_state[f'requests_{selected_bot_name}'] = []
+            st.success(f"Conversation with {selected_bot_name} has been cleared.")
 
 # Main chat area
 title_container = st.container()

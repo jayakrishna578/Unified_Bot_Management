@@ -98,4 +98,9 @@ class Bot:
                     processed_documents.append(content)  # Adjust this based on the expected format
 
             return processed_documents
+        
+    def clear_conversation(self):
+        # Assuming the ConversationBufferMemory has a method to clear its memory
+        # If not, this method needs to be implemented in the ConversationBufferMemory class
+        self.memory.clear()
 
