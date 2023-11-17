@@ -74,7 +74,6 @@ pypdf==3.16.4
 python-dateutil==2.8.2
 python-dotenv==1.0.0
 pytz==2023.3.post1
-pywin32==306
 PyYAML==6.0.1
 qdrant-client==1.6.4
 referencing==0.30.2
